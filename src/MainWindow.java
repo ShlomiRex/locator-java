@@ -5,6 +5,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class MainWindow extends JFrame {
+
+
+    private SearchProducerThread searchProducerThread = null; //Initialized once for every seach.
+
     public MainWindow() {
         super("locator");
         try {
@@ -26,6 +30,14 @@ public class MainWindow extends JFrame {
 
         JTextField textField_Search = new JTextField(textColumns);
         JButton btn_Search = new JButton("Search");
+        btn_Search.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                System.out.println("Search clicked");
+                searchProducerThread = new SearchProducerThread(textField_Search.getText());
+                searchProducerThread.start();
+            }
+        });
         JButton btn_StopSearching = new JButton("Stop");
         btn_StopSearching.setVisible(false);
 
@@ -40,6 +52,8 @@ public class MainWindow extends JFrame {
 
         // Folder select panel
 
+        JTextField textField_Path = new JTextField(textColumns); //Needed for on folder select
+
         JLabel label_FolderSelect = new JLabel("Select a folder, or type path");
         JButton btn_SelectFolder = new JButton("Select");
         btn_SelectFolder.addActionListener(new ActionListener() {
@@ -51,8 +65,7 @@ public class MainWindow extends JFrame {
                 if(ret_val == JFileChooser.APPROVE_OPTION) {
                     File folder = fileChooser.getSelectedFile();
                     System.out.println("Selected folder: " + folder.getPath());
-                } else {
-                    //TODO: Do something
+                    textField_Path.setText(folder.getPath());
                 }
             }
         });
@@ -69,7 +82,7 @@ public class MainWindow extends JFrame {
         // Path panel
 
         JLabel label_Path = new JLabel("Path:");
-        JTextField textField_Path = new JTextField(textColumns);
+
 
         JPanel panel_PathPanel = new JPanel();
         panel_PathPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
