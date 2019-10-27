@@ -103,7 +103,12 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 System.out.println("Search clicked");
-                searchProducerThread = new SearchProducerThread(textField_Search.getText(), textField_Path.getText());
+
+                SearchParams searchParams = new SearchParams(textField_Search.getText(), textField_Path.getText());
+                searchParams.isFollowSymbolicLinks = checkBox_SymbolicLinks.isSelected();
+                searchParams.isReursive = checkBox_RecursiveSearch.isSelected();
+
+                searchProducerThread = new SearchProducerThread(searchParams);
                 searchProducerThread.start();
             }
         });

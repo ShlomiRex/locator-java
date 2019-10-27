@@ -1,4 +1,6 @@
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -10,36 +12,34 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class SearchProducerThread extends Thread {
 
-    private final String search_str;
     private final SearchWindow searchWindow;
     private final SearchConsumerGUIThread searchConsumerGUIThread;
 
     private BlockingQueue<String> bq;
 
     //Search parameters
-    private String search_cmd;
-    private String path;
+    private SearchParams searchParams;
 
-    public SearchProducerThread(String search_str, String path) {
+    public SearchProducerThread(SearchParams searchParams) {
         super("SearchThread");
-        this.search_str = search_str;
-        this.path = path;
+        this.searchParams = searchParams;
 
         //Create shared producer-consumer queue
         this.bq = new LinkedBlockingQueue<String>();
 
-        searchWindow = new SearchWindow(search_str);
+        searchWindow = new SearchWindow(searchParams.searchString);
         searchConsumerGUIThread = new SearchConsumerGUIThread(searchWindow, bq);
     }
 
     @Override
     public void run() {
         super.run();
-        System.out.println("Searching string: " + search_str);
+        System.out.println("Searching string: " + searchParams.searchString);
 
         searchWindow.setVisible(true);
         searchConsumerGUIThread.start();
 
+        /*
         search_cmd = "";
         //search_cmd += "echo \"" + path + "\" | ";
         search_cmd += "findstr /s /M \"" + search_str + "\" *";
@@ -63,9 +63,78 @@ public class SearchProducerThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
 
+
+
+        try {
+            Files.walk(Paths.get(searchParams.path))
+                    .filter(Files::isRegularFile)
+                    .forEach((f)->{
+                        String filepath = f.toString();
+                        if(searchParams.isIncludeFilename && filepath.contains(searchParams.searchString)) {
+                            try {
+                                bq.put(filepath);
+                                return; //Go next file
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        //If the file contains the searchString, add to bq
+                        File file = new File(filepath);
+                        String line;
+                        try {
+                            FileReader fReader = new FileReader(file);
+                            BufferedReader fileBuff = new BufferedReader(fReader);
+                            while ((line = fileBuff.readLine()) != null) {
+                                if(line.contains(searchParams.searchString)) {
+                                    bq.put(filepath);
+                                    return;
+                                }
+                            }
+                            fileBuff.close();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         System.out.println("Finished searching");
+    }
+
+    private void recursiveSearch() {
+
+    }
+
+    private void linearSearch(String path) throws InterruptedException, IOException {
+        File dir = new File(path);
+        File[] directoryListing = dir.listFiles();
+        for(File f : directoryListing) {
+            //Does the name has the string?
+            if(searchParams.isIncludeFilename && f.getName().contains(searchParams.searchString)) {
+                bq.put(f.getAbsolutePath());
+            }
+
+            //Does the file contains the string?
+            String line;
+            FileReader fReader = new FileReader(f);
+            BufferedReader fileBuff = new BufferedReader(fReader);
+            while ((line = fileBuff.readLine()) != null) {
+                if(line.contains(searchParams.searchString)) {
+                    bq.put(f.getAbsolutePath());
+                    break;
+                }
+            }
+            fileBuff.close();
+        }
     }
 }
