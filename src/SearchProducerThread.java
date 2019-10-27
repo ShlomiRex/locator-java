@@ -15,16 +15,20 @@ public class SearchProducerThread extends Thread {
     private final SearchConsumerGUIThread searchConsumerGUIThread;
 
     private BlockingQueue<String> bq;
-    private String search_cmd;
 
-    public SearchProducerThread(String regex) {
+    //Search parameters
+    private String search_cmd;
+    private String path;
+
+    public SearchProducerThread(String search_str, String path) {
         super("SearchThread");
-        this.search_str = regex;
+        this.search_str = search_str;
+        this.path = path;
 
         //Create shared producer-consumer queue
         this.bq = new LinkedBlockingQueue<String>();
 
-        searchWindow = new SearchWindow();
+        searchWindow = new SearchWindow(search_str);
         searchConsumerGUIThread = new SearchConsumerGUIThread(searchWindow, bq);
     }
 
@@ -36,7 +40,9 @@ public class SearchProducerThread extends Thread {
         searchWindow.setVisible(true);
         searchConsumerGUIThread.start();
 
-        search_cmd = "findstr /s /M \"" + search_str + "\" *";
+        search_cmd = "";
+        //search_cmd += "echo \"" + path + "\" | ";
+        search_cmd += "findstr /s /M \"" + search_str + "\" *";
         System.out.println("Command: " + search_cmd);
         try {
             Process powerShellProcess = Runtime.getRuntime().exec(search_cmd);

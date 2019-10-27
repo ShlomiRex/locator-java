@@ -24,20 +24,11 @@ public class MainWindow extends JFrame {
         BoxLayout boxLayout = new BoxLayout(getContentPane(), BoxLayout.Y_AXIS);
         setLayout(boxLayout);
 
-        int textColumns = 25;
-
         // Search panel
 
-        JTextField textField_Search = new JTextField(textColumns);
+        JTextField textField_Search = new JTextField(25);
         JButton btn_Search = new JButton("Search");
-        btn_Search.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                System.out.println("Search clicked");
-                searchProducerThread = new SearchProducerThread(textField_Search.getText());
-                searchProducerThread.start();
-            }
-        });
+
         JButton btn_StopSearching = new JButton("Stop");
         btn_StopSearching.setVisible(false);
 
@@ -52,7 +43,7 @@ public class MainWindow extends JFrame {
 
         // Folder select panel
 
-        JTextField textField_Path = new JTextField(textColumns); //Needed for on folder select
+        JTextField textField_Path = new JTextField(25); //Needed for on folder select
 
         JLabel label_FolderSelect = new JLabel("Select a folder, or type path");
         JButton btn_SelectFolder = new JButton("Select");
@@ -108,6 +99,16 @@ public class MainWindow extends JFrame {
 
         // Finalize
 
+        btn_Search.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                System.out.println("Search clicked");
+                searchProducerThread = new SearchProducerThread(textField_Search.getText(), textField_Path.getText());
+                searchProducerThread.start();
+            }
+        });
+
         pack();
+        setLocationRelativeTo(null);
     }
 }
