@@ -3,8 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="c90d7938-53b3-4ebf-b236-010184564b09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SearchConsumerGUIThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SearchConsumerGUIThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SearchWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SearchWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/locator-java/MainWindow$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/locator-java/MainWindow$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/locator-java/MainWindow.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/locator-java/MainWindow.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/locator-java/SearchProducerThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/locator-java/SearchProducerThread.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MainWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SearchProducerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SearchProducerThread.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -83,9 +86,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/SearchWindow.java</url>
-          <line>104</line>
-          <option name="timeStamp" value="16" />
+          <url>file://$PROJECT_DIR$/src/MainWindow.java</url>
+          <line>119</line>
+          <option name="timeStamp" value="22" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

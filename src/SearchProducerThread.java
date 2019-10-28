@@ -1,6 +1,5 @@
+import javax.swing.*;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -24,9 +23,11 @@ public class SearchProducerThread extends Thread {
 
     private Queue<File> dirQueue;
 
-    public SearchProducerThread(SearchParams searchParams) {
+    private JButton stopButton;
+    public SearchProducerThread(JButton stopButton, SearchParams searchParams) {
         super("SearchThread");
         this.searchParams = searchParams;
+        this.stopButton = stopButton;
 
         dirQueue = new ConcurrentLinkedQueue<>();
 
@@ -127,6 +128,13 @@ public class SearchProducerThread extends Thread {
         //Tell consumer that producer stopped
         searchConsumerGUIThread.interrupt();
 
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                stopButton.setEnabled(false);
+            }
+        });
+
         System.out.println("Finished searching");
     }
 
@@ -145,7 +153,7 @@ public class SearchProducerThread extends Thread {
 
             long maxSizeMB = 100;
             if(mb > maxSizeMB) {
-                System.out.println("Skips file: " + f.getAbsolutePath()+"\n\tReason: File size (" + mb + "MB) exceeds " + maxSizeMB);
+                System.out.println("Skips file: " + f.getAbsolutePath()+"\n\tReason: File size (" + mb + "MB) exceeds " + maxSizeMB + "MB");
                 continue;
             }
 

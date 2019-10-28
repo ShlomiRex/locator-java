@@ -8,9 +8,10 @@ public class MainWindow extends JFrame {
 
 
     private SearchProducerThread searchProducerThread = null; //Initialized once for every seach.
-
+    private Thread mainThread;
     public MainWindow() {
         super("locator");
+        this.mainThread = Thread.currentThread();
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -30,8 +31,7 @@ public class MainWindow extends JFrame {
         JButton btn_Search = new JButton("Search");
 
         JButton btn_StopSearching = new JButton("Stop");
-        btn_StopSearching.setVisible(false);
-
+        btn_StopSearching.setEnabled(false);
 
         JPanel panel_SearchPanel = new JPanel();
         panel_SearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -109,12 +109,16 @@ public class MainWindow extends JFrame {
                 searchParams.isFollowSymbolicLinks = checkBox_SymbolicLinks.isSelected();
                 searchParams.isReursive = checkBox_RecursiveSearch.isSelected();
 
-                searchProducerThread = new SearchProducerThread(searchParams);
+                searchProducerThread = new SearchProducerThread(btn_StopSearching, searchParams);
                 searchProducerThread.start();
+
+                btn_StopSearching.setEnabled(true);
             }
         });
 
         pack();
         setLocationRelativeTo(null);
     }
+
+
 }
