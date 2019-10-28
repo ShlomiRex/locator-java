@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c90d7938-53b3-4ebf-b236-010184564b09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/SearchParams.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/locator-java/SearchProducerThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/locator-java/SearchProducerThread.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MainWindow.java" afterDir="false" />

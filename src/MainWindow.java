@@ -44,6 +44,7 @@ public class MainWindow extends JFrame {
         // Folder select panel
 
         JTextField textField_Path = new JTextField(25); //Needed for on folder select
+        textField_Path.setText("C:\\Users\\Shlomi\\Desktop\\workspace");
 
         JLabel label_FolderSelect = new JLabel("Select a folder, or type path");
         JButton btn_SelectFolder = new JButton("Select");

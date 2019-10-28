@@ -1,7 +1,9 @@
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -20,9 +22,13 @@ public class SearchProducerThread extends Thread {
     //Search parameters
     private SearchParams searchParams;
 
+    private Queue<File> dirQueue;
+
     public SearchProducerThread(SearchParams searchParams) {
         super("SearchThread");
         this.searchParams = searchParams;
+
+        dirQueue = new ConcurrentLinkedQueue<>();
 
         //Create shared producer-consumer queue
         this.bq = new LinkedBlockingQueue<String>();
@@ -66,7 +72,7 @@ public class SearchProducerThread extends Thread {
         */
 
 
-
+        /*
         try {
             Files.walk(Paths.get(searchParams.path))
                     .filter(Files::isRegularFile)
@@ -106,35 +112,63 @@ public class SearchProducerThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
 
+        //Search the current directory, linearSearch adds sub-directories into a Queue which will later use for linearSearch them.
+        //This way, we don't go deep into sub-directories but instead search from top to bottom in the file hierarchy.Ba
 
+        dirQueue.add(new File(searchParams.path));
+
+        while(dirQueue.isEmpty() == false) {
+            File f = dirQueue.poll();
+            linearSearch(f);
+        }
         System.out.println("Finished searching");
     }
 
-    private void recursiveSearch() {
-
-    }
-
-    private void linearSearch(String path) throws InterruptedException, IOException {
-        File dir = new File(path);
+    private void linearSearch(File dir) {
         File[] directoryListing = dir.listFiles();
+
         for(File f : directoryListing) {
+            if(f.isDirectory()) {
+                dirQueue.add(f);
+                continue;
+            }
+            //Does not read long files
+            long file_size = f.length();
+            long kb = file_size / 1024;
+            long mb = kb / 1024;
+
+            long maxSizeMB = 100;
+            if(mb > maxSizeMB) {
+                System.out.println("Skips file: " + f.getAbsolutePath()+"\n\tReason: File size (" + mb + "MB) exceeds " + maxSizeMB);
+                continue;
+            }
+
             //Does the name has the string?
             if(searchParams.isIncludeFilename && f.getName().contains(searchParams.searchString)) {
-                bq.put(f.getAbsolutePath());
+                try {
+                    bq.put(f.getAbsolutePath());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             //Does the file contains the string?
-            String line;
-            FileReader fReader = new FileReader(f);
-            BufferedReader fileBuff = new BufferedReader(fReader);
-            while ((line = fileBuff.readLine()) != null) {
-                if(line.contains(searchParams.searchString)) {
-                    bq.put(f.getAbsolutePath());
-                    break;
+            try {
+                String line;
+                FileReader fReader = new FileReader(f);
+                BufferedReader fileBuff = new BufferedReader(fReader);
+                while ((line = fileBuff.readLine()) != null) {
+                    if(line.contains(searchParams.searchString)) {
+                        bq.put(f.getAbsolutePath());
+                        break;
+                    }
                 }
+                fileBuff.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            fileBuff.close();
         }
     }
 }
