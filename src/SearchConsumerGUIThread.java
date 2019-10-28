@@ -32,6 +32,7 @@ public class SearchConsumerGUIThread extends Thread {
         while(running) {
             try {
                 String file = bq.take();
+
                 //System.out.println("Taking: " + file);
 
                 //Get abs path
@@ -39,7 +40,7 @@ public class SearchConsumerGUIThread extends Thread {
                 searchWindow.addFile(f.getAbsolutePath());
             } catch (InterruptedException e) {
                 //e.printStackTrace();
-                //Interrupts give this thread oppertunity to stop running gracefuly
+                //Interrupts give this thread opportunity to stop running graceful
             }
         }
 

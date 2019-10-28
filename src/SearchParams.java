@@ -7,7 +7,7 @@ public class SearchParams {
     public String path;
 
     //public boolean isRegex; //Not yet implimented
-    public boolean isReursive;
+    public boolean isRecursive;
     public boolean isFollowSymbolicLinks;
     public boolean isIncludeFilename;
     public int maxMatchesFiles = 100;

@@ -89,14 +89,18 @@ public class MainWindow extends JFrame {
         add(panel_FolderSelect);
         add(panel_PathPanel);
 
-        // Add components to BoxLayout
+        //Checkboxes
         JCheckBox checkBox_RecursiveSearch = new JCheckBox("Recursive search", true);
         checkBox_RecursiveSearch.setAlignmentX(Component.LEFT_ALIGNMENT);
         JCheckBox checkBox_SymbolicLinks = new JCheckBox("Follow symbolic links", true);
         checkBox_SymbolicLinks.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JCheckBox checkBox_IncludeFilenames = new JCheckBox("Include filenames", true);
+        checkBox_IncludeFilenames.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        //Add to JFrame
         add(checkBox_RecursiveSearch);
         add(checkBox_SymbolicLinks);
+        add(checkBox_IncludeFilenames);
 
         // Finalize
 
@@ -106,7 +110,8 @@ public class MainWindow extends JFrame {
 
                 SearchParams searchParams = new SearchParams(textField_Search.getText(), textField_Path.getText());
                 searchParams.isFollowSymbolicLinks = checkBox_SymbolicLinks.isSelected();
-                searchParams.isReursive = checkBox_RecursiveSearch.isSelected();
+                searchParams.isRecursive = checkBox_RecursiveSearch.isSelected();
+                searchParams.isIncludeFilename = checkBox_IncludeFilenames.isSelected();
 
                 searchProducerThread = new SearchProducerThread(btn_StopSearching, searchParams);
                 searchProducerThread.start();

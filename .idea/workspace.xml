@@ -2,13 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c90d7938-53b3-4ebf-b236-010184564b09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/test/yes.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/locator-java/MainWindow$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/locator-java/MainWindow$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/locator-java/MainWindow.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/locator-java/MainWindow.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/locator-java/SearchProducerThread$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/locator-java/SearchProducerThread$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/locator-java/SearchProducerThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/locator-java/SearchProducerThread.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MainWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SearchConsumerGUIThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SearchConsumerGUIThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SearchParams.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SearchParams.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SearchProducerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SearchProducerThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SearchWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SearchWindow.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,6 +30,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1Sm9zKiWLS5G4lophe00EfFmhvk" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
@@ -87,9 +93,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/MainWindow.java</url>
-          <line>125</line>
-          <option name="timeStamp" value="22" />
+          <url>file://$PROJECT_DIR$/src/SearchProducerThread.java</url>
+          <line>193</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/SearchProducerThread.java</url>
+          <line>209</line>
+          <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

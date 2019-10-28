@@ -1,5 +1,10 @@
 import javax.swing.*;
 import java.io.*;
+import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -121,9 +126,14 @@ public class SearchProducerThread extends Thread {
 
         dirQueue.add(new File(searchParams.path));
 
-        while(isRunning && dirQueue.isEmpty() == false) {
-            File f = dirQueue.poll();
-            linearSearch(f);
+        if(searchParams.isRecursive == false) {
+            linearSearch(dirQueue.poll());
+        }
+        else {
+            while (isRunning && dirQueue.isEmpty() == false) {
+                File f = dirQueue.poll();
+                linearSearch(f);
+            }
         }
 
         //Finished searching, update others
@@ -141,28 +151,49 @@ public class SearchProducerThread extends Thread {
         System.out.println("Finished searching");
     }
 
+    //TODO: FOR DEBUG ONLY
+    //private ArrayList<File> filesEnqueued = new ArrayList<>();
+
     private void linearSearch(File dir) {
         File[] directoryListing = dir.listFiles();
 
-        for(File f : directoryListing) {
+        ArrayList<File> files = new ArrayList<File>();
+        files.addAll(Arrays.asList(directoryListing));
+
+        for(File f : files) {
             if(f.isDirectory()) {
                 dirQueue.add(f);
                 continue;
             }
+
+            //Is symbolic link?
+            if(searchParams.isFollowSymbolicLinks && Files.isSymbolicLink(f.toPath())) {
+                try {
+                    Path link = Files.readSymbolicLink(f.toPath());
+                    files.add(link.toFile());
+                    System.out.println("Symbolic link:" + f.toPath() + " -> " + link);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
             //Does not read long files
             long file_size = f.length();
             long kb = file_size / 1024;
             long mb = kb / 1024;
 
             if(mb > fileMaxSize) {
-                System.out.println("Skips file: " + f.getAbsolutePath()+"\n\tReason: File size (" + mb + "MB) exceeds " + fileMaxSize + "MB");
+                System.out.println("Skips file: " + f.getAbsolutePath() + "\n\tReason: File size (" + mb + "MB) exceeds " + fileMaxSize + "MB");
                 continue;
             }
 
             //Does the name has the string?
             if(searchParams.isIncludeFilename && f.getName().contains(searchParams.searchString)) {
                 try {
-                    bq.put(f.getAbsolutePath());
+                    String fpath = f.getAbsolutePath();
+                    bq.put(fpath);
+                    //filesEnqueued.add(f); //TODO: FOR DEBUG ONLY
+                    continue;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -175,7 +206,9 @@ public class SearchProducerThread extends Thread {
                 BufferedReader fileBuff = new BufferedReader(fReader);
                 while ((line = fileBuff.readLine()) != null) {
                     if(line.contains(searchParams.searchString)) {
-                        bq.put(f.getAbsolutePath());
+                        String fpath = f.getAbsolutePath();
+                        bq.put(fpath);
+                        //filesEnqueued.add(f); //TODO: FOR DEBUG ONLY
                         break;
                     }
                 }
