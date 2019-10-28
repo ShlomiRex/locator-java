@@ -62,7 +62,7 @@ public class SearchConsumerGUIThread extends Thread {
     @Override
     public void interrupt() {
         super.interrupt();
-        System.out.println("Interrupted");
+        //System.out.println("Interrupted");
         running = false;
     }
 }

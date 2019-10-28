@@ -17,6 +17,7 @@ public class SearchWindow extends JFrame {
 
     private String search_str;
     private JList<String> list;
+    private JTextArea textArea;
     private DefaultListModel<String> model;
 
     public SearchWindow(String search_str) throws HeadlessException {
@@ -28,6 +29,7 @@ public class SearchWindow extends JFrame {
 
         //Text area
         JTextArea textArea = new JTextArea(10, 50);
+        this.textArea = textArea;
         textArea.setEditable(false);
         JScrollPane scrollPane_TextArea = new JScrollPane(textArea);
         JScrollPane scrollPane_List = new JScrollPane(list);
@@ -83,36 +85,40 @@ public class SearchWindow extends JFrame {
                     //System.out.println("Selected: " + list.getSelectedValue());
 
                     try {
-                        String file_path = list.getSelectedValue();
-                        FileReader fileReader = new FileReader(new File(file_path));
-                        textArea.read(fileReader, file_path);
-
-                        //Highlight the matches results within the text
-                        Highlighter highlighter = textArea.getHighlighter();
-                        Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
-                        //p0 = Starting index of a matching search
-                        //p1 = End index of a matching search
-                        final int txtLen = textArea.getText().length();
-                        int p0 = 0, p1, left_offset = 0;
-                        String textLeft = textArea.getText();
-                        while(p0 < txtLen && p0 != -1) {
-                            p0 = left_offset + textLeft.indexOf(search_str);
-                            p1 = p0 + search_str.length();
-                            highlighter.addHighlight(p0, p1, painter );
-                            left_offset = p1;
-                            textLeft = textLeft.substring(p1 - left_offset);
-                        }
-                    } catch (FileNotFoundException ex) {
-                        ex.printStackTrace();
+                        highlight();
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     } catch (BadLocationException ex) {
                         ex.printStackTrace();
                     }
-
                 }
             }
         });
+    }
+
+    private void highlight() throws IOException, BadLocationException {
+        String file_path = list.getSelectedValue();
+        FileReader fileReader = new FileReader(new File(file_path));
+        textArea.read(fileReader, file_path);
+
+        //Highlight the matches results within the text
+        Highlighter highlighter = textArea.getHighlighter();
+        highlighter.removeAllHighlights();
+        Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
+
+        final String text = textArea.getText();
+        int p0 = 0, p1 = 0;
+        int offset = 0;
+
+        while(true) {
+            p0 = text.indexOf(search_str, offset);
+            if(p0 == -1)
+                break;
+
+            p1 = p0 + search_str.length();
+            offset += p1;
+            highlighter.addHighlight(p0, p1, painter);
+        }
     }
 
     public void addFile(String file) {
