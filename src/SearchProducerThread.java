@@ -15,15 +15,15 @@ public class SearchProducerThread extends Thread {
 
     private final SearchWindow searchWindow;
     private final SearchConsumerGUIThread searchConsumerGUIThread;
-
     private BlockingQueue<String> bq;
-
-    //Search parameters
     private SearchParams searchParams;
-
     private Queue<File> dirQueue;
-
     private JButton stopButton;
+    private boolean isRunning = false;
+
+    //Files above this size are not read.
+    private long fileMaxSize = 10;
+
     public SearchProducerThread(JButton stopButton, SearchParams searchParams) {
         super("SearchThread");
         this.searchParams = searchParams;
@@ -41,6 +41,7 @@ public class SearchProducerThread extends Thread {
     @Override
     public void run() {
         super.run();
+        isRunning = true;
         System.out.println("Searching string: " + searchParams.searchString);
 
         searchWindow.setVisible(true);
@@ -120,10 +121,12 @@ public class SearchProducerThread extends Thread {
 
         dirQueue.add(new File(searchParams.path));
 
-        while(dirQueue.isEmpty() == false) {
+        while(isRunning && dirQueue.isEmpty() == false) {
             File f = dirQueue.poll();
             linearSearch(f);
         }
+
+        //Finished searching, update others
 
         //Tell consumer that producer stopped
         searchConsumerGUIThread.interrupt();
@@ -151,9 +154,8 @@ public class SearchProducerThread extends Thread {
             long kb = file_size / 1024;
             long mb = kb / 1024;
 
-            long maxSizeMB = 100;
-            if(mb > maxSizeMB) {
-                System.out.println("Skips file: " + f.getAbsolutePath()+"\n\tReason: File size (" + mb + "MB) exceeds " + maxSizeMB + "MB");
+            if(mb > fileMaxSize) {
+                System.out.println("Skips file: " + f.getAbsolutePath()+"\n\tReason: File size (" + mb + "MB) exceeds " + fileMaxSize + "MB");
                 continue;
             }
 
@@ -178,9 +180,19 @@ public class SearchProducerThread extends Thread {
                     }
                 }
                 fileBuff.close();
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
+                //e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void interrupt() {
+        super.interrupt();
+        isRunning = false;
     }
 }

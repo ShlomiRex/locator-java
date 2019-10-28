@@ -103,7 +103,6 @@ public class MainWindow extends JFrame {
         btn_Search.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                System.out.println("Search clicked");
 
                 SearchParams searchParams = new SearchParams(textField_Search.getText(), textField_Path.getText());
                 searchParams.isFollowSymbolicLinks = checkBox_SymbolicLinks.isSelected();
@@ -113,6 +112,13 @@ public class MainWindow extends JFrame {
                 searchProducerThread.start();
 
                 btn_StopSearching.setEnabled(true);
+            }
+        });
+
+        btn_StopSearching.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchProducerThread.interrupt();
             }
         });
 

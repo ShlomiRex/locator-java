@@ -82,9 +82,10 @@ public class SearchWindow extends JFrame {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if(e.getValueIsAdjusting() == false) {
-                    //System.out.println("Selected: " + list.getSelectedValue());
+                    System.out.println("Selected: " + list.getSelectedValue());
 
                     try {
+                        populateTextArea();
                         highlight();
                     } catch (IOException ex) {
                         ex.printStackTrace();
@@ -96,11 +97,15 @@ public class SearchWindow extends JFrame {
         });
     }
 
-    private void highlight() throws IOException, BadLocationException {
+    private void populateTextArea() throws IOException {
         String file_path = list.getSelectedValue();
-        FileReader fileReader = new FileReader(new File(file_path));
+        File fileToRead = new File(file_path);
+        System.out.println("File size in MB: " + fileToRead.length() / (1024 * 1024));
+        FileReader fileReader = new FileReader(fileToRead);
         textArea.read(fileReader, file_path);
+    }
 
+    private void highlight() throws IOException, BadLocationException {
         //Highlight the matches results within the text
         Highlighter highlighter = textArea.getHighlighter();
         highlighter.removeAllHighlights();
