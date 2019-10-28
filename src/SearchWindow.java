@@ -5,6 +5,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Highlighter;
 import javax.swing.text.DefaultHighlighter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -24,7 +27,7 @@ public class SearchWindow extends JFrame {
         list = new JList<>( model);
 
         //Text area
-        JTextArea textArea = new JTextArea(10, 30);
+        JTextArea textArea = new JTextArea(10, 50);
         textArea.setEditable(false);
         JScrollPane scrollPane_TextArea = new JScrollPane(textArea);
         JScrollPane scrollPane_List = new JScrollPane(list);
@@ -40,6 +43,38 @@ public class SearchWindow extends JFrame {
         //Finilize
         pack();
         setLocationRelativeTo(null);
+
+        list.addMouseListener( new MouseAdapter()
+        {
+            public void mousePressed(MouseEvent e)
+            {
+                boolean isRightClick = SwingUtilities.isRightMouseButton(e);
+                if(isRightClick) {
+                    /*
+                    JPopupMenu popupMenu = new JPopupMenu("Test");
+                    JMenuItem copy = new JMenuItem("Copy");
+                    JMenuItem openFile = new JMenuItem("Open");
+                    JMenuItem openInExplorer = new JMenuItem("Open in file explorer");
+
+                    popupMenu.add(copy);
+                    popupMenu.add(openFile);
+                    popupMenu.add(openInExplorer);
+
+                    copy.addActionListener(new AbstractAction() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            System.out.println("Copy");
+                        }
+                    });
+
+                    popupMenu.setVisible(true);
+
+                    list.setSelectedIndex(list.locationToIndex(e.getPoint()));
+                    list.getModel().get
+                     */
+                }
+            }
+        });
 
         list.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -81,7 +116,6 @@ public class SearchWindow extends JFrame {
     }
 
     public void addFile(String file) {
-        //list.add(new JLabel(file));
         model.addElement(file);
     }
 }

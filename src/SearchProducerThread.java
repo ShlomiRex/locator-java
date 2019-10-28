@@ -123,6 +123,10 @@ public class SearchProducerThread extends Thread {
             File f = dirQueue.poll();
             linearSearch(f);
         }
+
+        //Tell consumer that producer stopped
+        searchConsumerGUIThread.interrupt();
+
         System.out.println("Finished searching");
     }
 

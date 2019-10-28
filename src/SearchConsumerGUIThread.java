@@ -37,12 +37,26 @@ public class SearchConsumerGUIThread extends Thread {
                 //Get abs path
                 File f = new File(file);
                 searchWindow.addFile(f.getAbsolutePath());
-                f = null;
+            } catch (InterruptedException e) {
+                //e.printStackTrace();
+                //Interrupts give this thread oppertunity to stop running gracefuly
+            }
+        }
 
+        //If there's left items to add to GUI, do it now
+        while(bq.isEmpty() == false) {
+            try {
+                String file = bq.take();
+                //System.out.println("Taking: " + file);
+
+                //Get abs path
+                File f = new File(file);
+                searchWindow.addFile(f.getAbsolutePath());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        System.out.println("SearchConsumerGUIThread finished");
     }
 
     @Override
