@@ -17,32 +17,26 @@ public class SearchWindow extends JFrame {
 
     private String search_str;
     private JList<String> list;
-    private JTextArea textArea;
+//    private JTextArea textArea;
     private DefaultListModel<String> model;
 
-    public SearchWindow(String search_str) throws HeadlessException {
+    public SearchWindow(String search_str) {
         super("Search results");
         this.search_str = search_str;
 
         model = new DefaultListModel<>();
         list = new JList<>( model);
-
-        //Text area
-        JTextArea textArea = new JTextArea(10, 50);
-        this.textArea = textArea;
-        textArea.setEditable(false);
-        JScrollPane scrollPane_TextArea = new JScrollPane(textArea);
         JScrollPane scrollPane_List = new JScrollPane(list);
 
+        JTextAreaWithLineNumber textAreaWithLineNumber = new JTextAreaWithLineNumber();
+        JTextArea textArea = textAreaWithLineNumber.getTextArea();
+        textArea.setColumns(50);
+        textArea.setRows(10);
+        textArea.setEditable(false);
 
         setLayout( new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-
-
-        //Add components to frame
         add(scrollPane_List);
-        add(scrollPane_TextArea);
-
-        //Finilize
+        add(textAreaWithLineNumber);
         pack();
         setLocationRelativeTo(null);
 
@@ -85,27 +79,21 @@ public class SearchWindow extends JFrame {
                     System.out.println("Selected: " + list.getSelectedValue());
 
                     try {
-                        populateTextArea();
-                        highlight();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    } catch (BadLocationException ex) {
-                        ex.printStackTrace();
+                        String file_path = list.getSelectedValue();
+                        textAreaWithLineNumber.populateTextArea(file_path);
+
+                        highlight(textArea);
+                    } catch (IOException | BadLocationException exx) {
+                        exx.printStackTrace();
                     }
                 }
             }
         });
+
+
     }
 
-    private void populateTextArea() throws IOException {
-        String file_path = list.getSelectedValue();
-        File fileToRead = new File(file_path);
-        System.out.println("File size in MB: " + fileToRead.length() / (1024 * 1024));
-        FileReader fileReader = new FileReader(fileToRead);
-        textArea.read(fileReader, file_path);
-    }
-
-    private void highlight() throws IOException, BadLocationException {
+    private void highlight(JTextArea textArea) throws BadLocationException {
         //Highlight the matches results within the text
         Highlighter highlighter = textArea.getHighlighter();
         highlighter.removeAllHighlights();
