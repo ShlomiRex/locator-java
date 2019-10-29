@@ -10,7 +10,7 @@ public class MainWindow extends JFrame {
     private SearchProducerThread searchProducerThread = null; //Initialized once for every seach.
     private Thread mainThread;
     public MainWindow() {
-        super("locator");
+        super("Search");
         this.mainThread = Thread.currentThread();
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -41,9 +41,7 @@ public class MainWindow extends JFrame {
         panel_SearchPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // Folder select panel
-        JTextField textField_Path = new JTextField(25); //Needed for on folder select
-        textField_Path.setText("C:\\Users\\Shlomi\\Desktop\\workspace\\locator-java\\test");
-
+        JTextField textField_Path = new JTextField(35); //Needed for on folder select
         JLabel label_FolderSelect = new JLabel("Select a folder, or type path");
         JButton btn_SelectFolder = new JButton("Select");
 
