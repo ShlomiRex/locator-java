@@ -39,7 +39,7 @@ public class SearchProducerThread extends Thread {
         //Create shared producer-consumer queue
         this.bq = new LinkedBlockingQueue<String>();
 
-        searchWindow = new SearchWindow(searchParams.searchString);
+        searchWindow = new SearchWindow(searchParams);
         searchConsumerGUIThread = new SearchConsumerGUIThread(searchWindow, bq);
     }
 
@@ -112,7 +112,7 @@ public class SearchProducerThread extends Thread {
 
             //Does not read long/big files
             if(searchParams.isFileSizeSkip && f.length() > fileMaxSize) {
-                System.out.println("Skips file: " + f.getAbsolutePath() + "\n\tReason: File size (" + f.length() + "B) exceeds " + fileMaxSize + "B");
+                //System.out.println("Skips file: " + f.getAbsolutePath() + "\n\tReason: File size (" + f.length() + " Bytes) exceeds " + fileMaxSize + " Bytes");
                 continue;
             }
 

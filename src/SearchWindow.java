@@ -15,14 +15,15 @@ import java.io.IOException;
 
 public class SearchWindow extends JFrame {
 
-    private String search_str;
     private JList<String> list;
 //    private JTextArea textArea;
     private DefaultListModel<String> model;
 
-    public SearchWindow(String search_str) {
+    private SearchParams searchParams;
+
+    public SearchWindow(SearchParams searchParams) {
         super("Search results");
-        this.search_str = search_str;
+        this.searchParams = searchParams;
 
         model = new DefaultListModel<>();
         list = new JList<>( model);
@@ -99,19 +100,26 @@ public class SearchWindow extends JFrame {
         highlighter.removeAllHighlights();
         Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
 
-        final String text = textArea.getText();
+        final String text = textArea.getText().toLowerCase();
         int p0 = 0, p1 = 0;
         int offset = 0;
+        final int searchString_length = searchParams.searchString.length();
+        final String searchString_lower = searchParams.searchString.toLowerCase();
 
         while(true) {
-            p0 = text.indexOf(search_str, offset);
+            if(searchParams.isCaseSensitive)
+                p0 = text.indexOf(searchString_lower, offset);
+            else
+                p0 = text.indexOf(searchString_lower, offset);
+
             if(p0 == -1)
                 break;
 
-            p1 = p0 + search_str.length();
+            p1 = p0 + searchString_length;
             offset += p1;
             highlighter.addHighlight(p0, p1, painter);
         }
+
     }
 
     public void addFile(String file) {
