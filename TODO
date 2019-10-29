@@ -6,3 +6,8 @@ Future Features
 Personal Comments
 ==================
 * Think about searching a directory - while splitting the search job to multiple threads (not N threads (where N is the number of total files in a directory), but 4 or 8.)
+* In Producer thread, fix CaseSensitive checks for filename and file's contents,
+so that the case sensitive check in while loop will be outside of the loop, and 
+for the Filename, u can remove duplicate code
+* In producer thread, while scanning file's contents, u can open new thread just for reading. May be
+very fast!
