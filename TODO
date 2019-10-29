@@ -1,3 +1,8 @@
+Future Features
+==================
+* Allow Right Clicking on JList in SearchWindow to allow copy file path
+* In search result window, in JTextPane, allow line wrapping (so you don't have to scroll horizontally for long lines)  
+
 Personal Comments
 ==================
 * Think about searching a directory - while splitting the search job to multiple threads (not N threads (where N is the number of total files in a directory), but 4 or 8.)
