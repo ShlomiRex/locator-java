@@ -10,8 +10,13 @@ public class SearchParams {
     public boolean isRecursive;
     public boolean isFollowSymbolicLinks;
     public boolean isIncludeFilename;
-    public int maxMatchesFiles = 100;
     public boolean isCaseSensitive;
+    public boolean isFileSizeSkip;
+    public long isFileSizeSkip_size;//In bytes
+
+
+    public int maxMatchesFiles = 100; //TODO: Not used
+
     public SearchParams(String searchString, String path) {
         this.searchString = searchString;
         this.path = path;

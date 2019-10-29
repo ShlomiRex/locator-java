@@ -67,7 +67,7 @@ public class JTextAreaWithLineNumber extends JScrollPane {
 
     public void populateTextArea(String selectedFilePath) throws IOException {
         File fileToRead = new File(selectedFilePath);
-        System.out.println("File size in MB: " + fileToRead.length() / (1024 * 1024));
+        //System.out.println("File size in MB: " + fileToRead.length() / (1024 * 1024));
         FileReader fileReader = new FileReader(fileToRead);
         textArea.read(fileReader, selectedFilePath);
 

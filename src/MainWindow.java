@@ -26,7 +26,6 @@ public class MainWindow extends JFrame {
         setLayout(boxLayout);
 
         // Search panel
-
         JTextField textField_Search = new JTextField(25);
         JButton btn_Search = new JButton("Search");
 
@@ -42,12 +41,74 @@ public class MainWindow extends JFrame {
         panel_SearchPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // Folder select panel
-
         JTextField textField_Path = new JTextField(25); //Needed for on folder select
         textField_Path.setText("C:\\Users\\Shlomi\\Desktop\\workspace\\locator-java\\test");
 
         JLabel label_FolderSelect = new JLabel("Select a folder, or type path");
         JButton btn_SelectFolder = new JButton("Select");
+
+        JPanel panel_FolderSelect = new JPanel();
+        panel_FolderSelect.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel_FolderSelect.add(label_FolderSelect);
+        panel_FolderSelect.add(btn_SelectFolder);
+
+
+        panel_FolderSelect.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+
+        // Path panel
+        JPanel panel_PathPanel = new JPanel();
+        panel_PathPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JLabel label_Path = new JLabel("Path:");
+        panel_PathPanel.add(label_Path);
+        panel_PathPanel.add(textField_Path);
+        panel_PathPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        //Checkboxes
+        JCheckBox checkBox_RecursiveSearch = new JCheckBox("Recursive search", true);
+        checkBox_RecursiveSearch.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JCheckBox checkBox_SymbolicLinks = new JCheckBox("Follow symbolic links", true);
+        checkBox_SymbolicLinks.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JCheckBox checkBox_IncludeFilenames = new JCheckBox("Include filenames", true);
+        checkBox_IncludeFilenames.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JCheckBox checkBox_CaseSensitive = new JCheckBox("Case sensitive");
+        JCheckBox checkBox_FileSizeSkip = new JCheckBox("Skip files");
+        checkBox_FileSizeSkip.setSelected(true);
+
+        // File size panel
+        JPanel panel_FileSizePanel = new JPanel();
+        panel_FileSizePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel_FileSizePanel.setBorder(BorderFactory.createLoweredBevelBorder());
+        panel_FileSizePanel.add(new JLabel("Skips file with size over:"));
+        JSpinner spinner_FileSize = new JSpinner();
+        ((JSpinner.DefaultEditor) spinner_FileSize.getEditor()).getTextField().setColumns(4);
+        spinner_FileSize.setValue(new Long(5));
+        JComboBox comboBox_SizeType = new JComboBox();
+        comboBox_SizeType.addItem("B"); //0
+        comboBox_SizeType.addItem("KB"); //1
+        comboBox_SizeType.addItem("MB"); //2
+        comboBox_SizeType.addItem("GB"); //3
+        comboBox_SizeType.setSelectedIndex(2);
+
+        panel_FileSizePanel.add(spinner_FileSize);
+        panel_FileSizePanel.add(comboBox_SizeType);
+
+        panel_FileSizePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+
+        //Add to JFrame
+        add(panel_SearchPanel);
+        add(panel_FolderSelect);
+        add(panel_PathPanel);
+        add(checkBox_RecursiveSearch);
+        add(checkBox_SymbolicLinks);
+        add(checkBox_IncludeFilenames);
+        add(checkBox_CaseSensitive);
+        add(checkBox_FileSizeSkip);
+        add(panel_FileSizePanel);
+
+
+        // Finalize (listeners)
         btn_SelectFolder.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -71,50 +132,6 @@ public class MainWindow extends JFrame {
             }
         });
 
-        JPanel panel_FolderSelect = new JPanel();
-        panel_FolderSelect.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel_FolderSelect.add(label_FolderSelect);
-        panel_FolderSelect.add(btn_SelectFolder);
-
-
-        panel_FolderSelect.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-
-        // Path panel
-
-        JLabel label_Path = new JLabel("Path:");
-
-
-        JPanel panel_PathPanel = new JPanel();
-        panel_PathPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel_PathPanel.add(label_Path);
-        panel_PathPanel.add(textField_Path);
-
-        panel_PathPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        // Add panels
-
-        add(panel_SearchPanel);
-        add(panel_FolderSelect);
-        add(panel_PathPanel);
-
-        //Checkboxes
-        JCheckBox checkBox_RecursiveSearch = new JCheckBox("Recursive search", true);
-        checkBox_RecursiveSearch.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JCheckBox checkBox_SymbolicLinks = new JCheckBox("Follow symbolic links", true);
-        checkBox_SymbolicLinks.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JCheckBox checkBox_IncludeFilenames = new JCheckBox("Include filenames", true);
-        checkBox_IncludeFilenames.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JCheckBox checkBox_CaseSensitive = new JCheckBox("Case sensitive");
-
-        //Add to JFrame
-        add(checkBox_RecursiveSearch);
-        add(checkBox_SymbolicLinks);
-        add(checkBox_IncludeFilenames);
-        add(checkBox_CaseSensitive);
-
-        // Finalize
-
         btn_Search.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -124,6 +141,13 @@ public class MainWindow extends JFrame {
                 searchParams.isRecursive = checkBox_RecursiveSearch.isSelected();
                 searchParams.isIncludeFilename = checkBox_IncludeFilenames.isSelected();
                 searchParams.isCaseSensitive = checkBox_CaseSensitive.isSelected();
+                searchParams.isFileSizeSkip = checkBox_FileSizeSkip.isSelected();
+
+                long bytes = ((Number) spinner_FileSize.getValue()).longValue();
+                int indexSelected = comboBox_SizeType.getSelectedIndex();
+                bytes *= Math.pow(1024, indexSelected);
+                searchParams.isFileSizeSkip_size = bytes;
+                System.out.println(bytes);
 
                 searchProducerThread = new SearchProducerThread(btn_StopSearching, searchParams);
                 searchProducerThread.start();
@@ -136,6 +160,15 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 searchProducerThread.interrupt();
+            }
+        });
+
+        checkBox_FileSizeSkip.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean enable = checkBox_FileSizeSkip.isSelected();
+                spinner_FileSize.setEnabled(enable);
+                comboBox_SizeType.setEnabled(enable);
             }
         });
 

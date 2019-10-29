@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,12 +26,13 @@ public class SearchProducerThread extends Thread {
     private boolean isRunning = false;
 
     //Files above this size are not read.
-    private long fileMaxSize = 10;
+    private long fileMaxSize;
 
     public SearchProducerThread(JButton stopButton, SearchParams searchParams) {
         super("SearchThread");
         this.searchParams = searchParams;
         this.stopButton = stopButton;
+        this.fileMaxSize = searchParams.isFileSizeSkip_size;
 
         dirQueue = new ConcurrentLinkedQueue<>();
 
@@ -51,75 +51,6 @@ public class SearchProducerThread extends Thread {
 
         searchWindow.setVisible(true);
         searchConsumerGUIThread.start();
-
-        /*
-        search_cmd = "";
-        //search_cmd += "echo \"" + path + "\" | ";
-        search_cmd += "findstr /s /M \"" + search_str + "\" *";
-        System.out.println("Command: " + search_cmd);
-        try {
-            Process powerShellProcess = Runtime.getRuntime().exec(search_cmd);
-
-            String line;
-            BufferedReader stdout = new BufferedReader(new InputStreamReader(
-                    powerShellProcess.getInputStream()));
-            while ((line = stdout.readLine()) != null) {
-                try {
-                    bq.put(line);
-                    //System.out.println("Putting: " + line);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            stdout.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
-
-
-        /*
-        try {
-            Files.walk(Paths.get(searchParams.path))
-                    .filter(Files::isRegularFile)
-                    .forEach((f)->{
-                        String filepath = f.toString();
-                        if(searchParams.isIncludeFilename && filepath.contains(searchParams.searchString)) {
-                            try {
-                                bq.put(filepath);
-                                return; //Go next file
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        //If the file contains the searchString, add to bq
-                        File file = new File(filepath);
-                        String line;
-                        try {
-                            FileReader fReader = new FileReader(file);
-                            BufferedReader fileBuff = new BufferedReader(fReader);
-                            while ((line = fileBuff.readLine()) != null) {
-                                if(line.contains(searchParams.searchString)) {
-                                    bq.put(filepath);
-                                    return;
-                                }
-                            }
-                            fileBuff.close();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
 
         //Search the current directory, linearSearch adds sub-directories into a Queue which will later use for linearSearch them.
         //This way, we don't go deep into sub-directories but instead search from top to bottom in the file hierarchy.Ba
@@ -177,13 +108,9 @@ public class SearchProducerThread extends Thread {
                 }
             }
 
-            //Does not read long files
-            long file_size = f.length();
-            long kb = file_size / 1024;
-            long mb = kb / 1024;
-
-            if(mb > fileMaxSize) {
-                System.out.println("Skips file: " + f.getAbsolutePath() + "\n\tReason: File size (" + mb + "MB) exceeds " + fileMaxSize + "MB");
+            //Does not read long/big files
+            if(searchParams.isFileSizeSkip && f.length() > fileMaxSize) {
+                System.out.println("Skips file: " + f.getAbsolutePath() + "\n\tReason: File size (" + f.length() + "B) exceeds " + fileMaxSize + "B");
                 continue;
             }
 
