@@ -11,6 +11,7 @@ public class SearchParams {
     public boolean isFollowSymbolicLinks;
     public boolean isIncludeFilename;
     public int maxMatchesFiles = 100;
+    public boolean isCaseSensitive;
     public SearchParams(String searchString, String path) {
         this.searchString = searchString;
         this.path = path;

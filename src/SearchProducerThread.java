@@ -188,15 +188,30 @@ public class SearchProducerThread extends Thread {
             }
 
             //Does the name has the string?
-            if(searchParams.isIncludeFilename && f.getName().contains(searchParams.searchString)) {
-                try {
-                    String fpath = f.getAbsolutePath();
-                    bq.put(fpath);
-                    //filesEnqueued.add(f); //TODO: FOR DEBUG ONLY
-                    continue;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if(searchParams.isIncludeFilename) {
+                if(searchParams.isCaseSensitive) {
+                    if( f.getName().contains(searchParams.searchString)) {
+                        try {
+                            String fpath = f.getAbsolutePath();
+                            bq.put(fpath);
+                            continue;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    if( f.getName().toLowerCase().contains(searchParams.searchString.toLowerCase())) {
+                        try {
+                            String fpath = f.getAbsolutePath();
+                            bq.put(fpath);
+                            continue;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
+
+
             }
 
             //Does the file contains the string?
@@ -205,11 +220,18 @@ public class SearchProducerThread extends Thread {
                 FileReader fReader = new FileReader(f);
                 BufferedReader fileBuff = new BufferedReader(fReader);
                 while ((line = fileBuff.readLine()) != null) {
-                    if(line.contains(searchParams.searchString)) {
-                        String fpath = f.getAbsolutePath();
-                        bq.put(fpath);
-                        //filesEnqueued.add(f); //TODO: FOR DEBUG ONLY
-                        break;
+                    if(searchParams.isCaseSensitive) {
+                        if(line.contains(searchParams.searchString)) {
+                            String fpath = f.getAbsolutePath();
+                            bq.put(fpath);
+                            break;
+                        }
+                    } else {
+                        if(line.toLowerCase().contains(searchParams.searchString.toLowerCase())) {
+                            String fpath = f.getAbsolutePath();
+                            bq.put(fpath);
+                            break;
+                        }
                     }
                 }
                 fileBuff.close();

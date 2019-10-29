@@ -54,7 +54,7 @@ public class SearchConsumerGUIThread extends Thread {
                 File f = new File(file);
                 searchWindow.addFile(f.getAbsolutePath());
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
         System.out.println("SearchConsumerGUIThread finished");

@@ -44,7 +44,7 @@ public class MainWindow extends JFrame {
         // Folder select panel
 
         JTextField textField_Path = new JTextField(25); //Needed for on folder select
-        textField_Path.setText("C:\\Users\\Shlomi\\Desktop\\workspace");
+        textField_Path.setText("C:\\Users\\Shlomi\\Desktop\\workspace\\locator-java\\test");
 
         JLabel label_FolderSelect = new JLabel("Select a folder, or type path");
         JButton btn_SelectFolder = new JButton("Select");
@@ -105,11 +105,13 @@ public class MainWindow extends JFrame {
         checkBox_SymbolicLinks.setAlignmentX(Component.LEFT_ALIGNMENT);
         JCheckBox checkBox_IncludeFilenames = new JCheckBox("Include filenames", true);
         checkBox_IncludeFilenames.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JCheckBox checkBox_CaseSensitive = new JCheckBox("Case sensitive");
 
         //Add to JFrame
         add(checkBox_RecursiveSearch);
         add(checkBox_SymbolicLinks);
         add(checkBox_IncludeFilenames);
+        add(checkBox_CaseSensitive);
 
         // Finalize
 
@@ -121,6 +123,7 @@ public class MainWindow extends JFrame {
                 searchParams.isFollowSymbolicLinks = checkBox_SymbolicLinks.isSelected();
                 searchParams.isRecursive = checkBox_RecursiveSearch.isSelected();
                 searchParams.isIncludeFilename = checkBox_IncludeFilenames.isSelected();
+                searchParams.isCaseSensitive = checkBox_CaseSensitive.isSelected();
 
                 searchProducerThread = new SearchProducerThread(btn_StopSearching, searchParams);
                 searchProducerThread.start();
