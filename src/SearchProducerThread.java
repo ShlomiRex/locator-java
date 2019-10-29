@@ -92,6 +92,8 @@ public class SearchProducerThread extends Thread {
         files.addAll(Arrays.asList(directoryListing));
 
         for(File f : files) {
+            if(isRunning == false)
+                break;
             if(f.isDirectory()) {
                 dirQueue.add(f);
                 continue;

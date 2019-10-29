@@ -79,7 +79,8 @@ public class MainWindow extends JFrame {
         JPanel panel_FileSizePanel = new JPanel();
         panel_FileSizePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel_FileSizePanel.setBorder(BorderFactory.createLoweredBevelBorder());
-        panel_FileSizePanel.add(new JLabel("Skips file with size over:"));
+        JLabel label_FileSkipSize = new JLabel("Skips file with size over:");
+        panel_FileSizePanel.add(label_FileSkipSize);
         JSpinner spinner_FileSize = new JSpinner();
         ((JSpinner.DefaultEditor) spinner_FileSize.getEditor()).getTextField().setColumns(4);
         spinner_FileSize.setValue(new Long(5));
@@ -169,6 +170,7 @@ public class MainWindow extends JFrame {
                 boolean enable = checkBox_FileSizeSkip.isSelected();
                 spinner_FileSize.setEnabled(enable);
                 comboBox_SizeType.setEnabled(enable);
+                label_FileSkipSize.setEnabled(enable);
             }
         });
 
