@@ -53,6 +53,15 @@ public class MainWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                String path = textField_Path.getText();
+                if(path != null && path != "") {
+                    try {
+                        File previousDir = new File(path);
+                        fileChooser.setCurrentDirectory(previousDir);
+                    } catch (Exception e2) {
+                        //skip
+                    }
+                }
                 int ret_val = fileChooser.showOpenDialog(getContentPane());
                 if(ret_val == JFileChooser.APPROVE_OPTION) {
                     File folder = fileChooser.getSelectedFile();
