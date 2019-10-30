@@ -178,6 +178,13 @@ public class MainWindow extends JFrame {
             }
         });
 
+        checkBox_Regex.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                checkBox_CaseSensitive.setEnabled(! checkBox_Regex.isSelected());
+            }
+        });
+
         pack();
         setLocationRelativeTo(null);
     }

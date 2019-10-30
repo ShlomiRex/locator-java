@@ -105,6 +105,8 @@ public class SearchProducerThread extends Thread {
                 continue;
             }
 
+            final String filepath = f.getAbsolutePath();
+
             //Is symbolic link?
             if(searchParams.isFollowSymbolicLinks && Files.isSymbolicLink(f.toPath())) {
                 try {
@@ -123,48 +125,34 @@ public class SearchProducerThread extends Thread {
             }
 
             final Pattern pattern = Pattern.compile(searchParams.searchString);
+            Matcher m;
 
             //Does the name has the string?
-            if(searchParams.isIncludeFilename) {
-                String fpath = f.getAbsolutePath();
-                if(searchParams.isRegex) {
-                    Matcher m;
-                    if(searchParams.isCaseSensitive) {
+            try {
+                if (searchParams.isIncludeFilename) {
+                    if(searchParams.isRegex) {
                         m = pattern.matcher(f.getName());
-                    } else {
-                        m = pattern.matcher(f.getName().toLowerCase());
-                    }
-
-                    if(m.find()) {
-                        //Regex matches
-                        System.out.println("Regex matches: " + f.getName());
-                        try {
-                            bq.put(fpath);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        if(m.find()) {
+                            System.out.println("Regex match: " + f.getName());
+                            bq.put(filepath);
+                            continue;
                         }
-                    }
-                } else {
-                    if(searchParams.isCaseSensitive) {
-                        if( f.getName().contains(searchParams.searchString)) {
-                            try {
-                                bq.put(fpath);
+                    } else {
+                        if (searchParams.isCaseSensitive) {
+                            if (f.getName().contains(searchParams.searchString)) {
+                                bq.put(filepath);
                                 continue;
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
                             }
-                        }
-                    } else {
-                        if( f.getName().toLowerCase().contains(searchParams.searchString.toLowerCase())) {
-                            try {
-                                bq.put(fpath);
+                        } else {
+                            if (f.getName().toLowerCase().contains(searchParams.searchString.toLowerCase())) {
+                                bq.put(filepath);
                                 continue;
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
                             }
                         }
                     }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             //Does the file contains the string?
@@ -172,29 +160,20 @@ public class SearchProducerThread extends Thread {
                 String line;
                 final FileReader fReader = new FileReader(f);
                 final BufferedReader fileBuff = new BufferedReader(fReader);
-                Matcher m;
-                final String filepath = f.getAbsolutePath();
 
                 while ((line = fileBuff.readLine()) != null) {
-                    if (searchParams.isCaseSensitive) {
+                    if(searchParams.isRegex) {
                         if(searchParams.isRegex) {
                             m = pattern.matcher(line);
                             if(m.find()) {
                                 System.out.println("Regex match: " + line);
-                                bq.put(filepath);
-                                break;
-                            }
-                        } else {
-                            if (line.contains(searchParams.searchString)) {
                                 bq.put(filepath);
                                 break;
                             }
                         }
                     } else {
-                        if(searchParams.isRegex) {
-                            m = pattern.matcher(line);
-                            if(m.find()) {
-                                System.out.println("Regex match: " + line);
+                        if (searchParams.isCaseSensitive) {
+                            if (line.contains(searchParams.searchString)) {
                                 bq.put(filepath);
                                 break;
                             }
@@ -205,6 +184,7 @@ public class SearchProducerThread extends Thread {
                             }
                         }
                     }
+
                 }
                 fileBuff.close();
             } catch (InterruptedException e) {
