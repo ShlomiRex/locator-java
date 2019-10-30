@@ -13,6 +13,7 @@ public class SearchParams {
     public boolean isCaseSensitive;
     public boolean isFileSizeSkip;
     public long isFileSizeSkip_size;//In bytes
+    public boolean isRegex;
 
 
     public int maxMatchesFiles = 100; //TODO: Not used

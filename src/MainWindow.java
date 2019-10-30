@@ -25,6 +25,8 @@ public class MainWindow extends JFrame {
         BoxLayout boxLayout = new BoxLayout(getContentPane(), BoxLayout.Y_AXIS);
         setLayout(boxLayout);
 
+        setIconImage( new ImageIcon("images/icon.png").getImage());
+
         // Search panel
         JTextField textField_Search = new JTextField(25);
         JButton btn_Search = new JButton("Search");
@@ -63,6 +65,7 @@ public class MainWindow extends JFrame {
         panel_PathPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         //Checkboxes
+        JCheckBox checkBox_Regex = new JCheckBox("Regex search");
         JCheckBox checkBox_RecursiveSearch = new JCheckBox("Recursive search", true);
         checkBox_RecursiveSearch.setAlignmentX(Component.LEFT_ALIGNMENT);
         JCheckBox checkBox_SymbolicLinks = new JCheckBox("Follow symbolic links", true);
@@ -72,6 +75,7 @@ public class MainWindow extends JFrame {
         JCheckBox checkBox_CaseSensitive = new JCheckBox("Case sensitive");
         JCheckBox checkBox_FileSizeSkip = new JCheckBox("Skip files");
         checkBox_FileSizeSkip.setSelected(true);
+
 
         // File size panel
         JPanel panel_FileSizePanel = new JPanel();
@@ -99,6 +103,7 @@ public class MainWindow extends JFrame {
         add(panel_SearchPanel);
         add(panel_FolderSelect);
         add(panel_PathPanel);
+        add(checkBox_Regex);
         add(checkBox_RecursiveSearch);
         add(checkBox_SymbolicLinks);
         add(checkBox_IncludeFilenames);
@@ -141,6 +146,7 @@ public class MainWindow extends JFrame {
                 searchParams.isIncludeFilename = checkBox_IncludeFilenames.isSelected();
                 searchParams.isCaseSensitive = checkBox_CaseSensitive.isSelected();
                 searchParams.isFileSizeSkip = checkBox_FileSizeSkip.isSelected();
+                searchParams.isRegex = checkBox_Regex.isSelected();
 
                 long bytes = ((Number) spinner_FileSize.getValue()).longValue();
                 int indexSelected = comboBox_SizeType.getSelectedIndex();

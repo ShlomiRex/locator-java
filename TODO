@@ -1,7 +1,12 @@
+In development
+==================
+* Regex
+
 Future Features
 ==================
 * Allow Right Clicking on JList in SearchWindow to allow copy file path
-* In search result window, in JTextPane, allow line wrapping (so you don't have to scroll horizontally for long lines)  
+* In search result window, in JTextPane, allow line wrapping (so you don't have to scroll horizontally for long lines)
+* Regex support
 
 Personal Comments
 ==================

@@ -27,6 +27,9 @@ public class SearchWindow extends JFrame {
 
         model = new DefaultListModel<>();
         list = new JList<>( model);
+
+        setIconImage( new ImageIcon("images/icon.png").getImage());
+
         JScrollPane scrollPane_List = new JScrollPane(list);
 
         JTextAreaWithLineNumber textAreaWithLineNumber = new JTextAreaWithLineNumber();
