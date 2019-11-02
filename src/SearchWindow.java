@@ -103,26 +103,29 @@ public class SearchWindow extends JFrame {
         highlighter.removeAllHighlights();
         Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
 
-        final String text = textArea.getText().toLowerCase();
-        int p0 = 0, p1 = 0;
-        int offset = 0;
-        final int searchString_length = searchParams.searchString.length();
-        final String searchString_lower = searchParams.searchString.toLowerCase();
+        if(searchParams.isRegex) {
 
-        while(true) {
-            if(searchParams.isCaseSensitive)
-                p0 = text.indexOf(searchString_lower, offset);
-            else
-                p0 = text.indexOf(searchString_lower, offset);
+        } else {
+            final String text = textArea.getText();
+            int p0 = 0, p1 = 0;
+            int offset = 0;
+            final int searchString_length = searchParams.searchString.length();
+            final String searchString_lower = searchParams.searchString.toLowerCase();
 
-            if(p0 == -1)
-                break;
+            while (true) {
+                if (searchParams.isCaseSensitive)
+                    p0 = text.indexOf(searchParams.searchString, offset);
+                else
+                    p0 = text.indexOf(searchString_lower, offset);
 
-            p1 = p0 + searchString_length;
-            offset += p1;
-            highlighter.addHighlight(p0, p1, painter);
+                if (p0 == -1)
+                    break;
+
+                p1 = p0 + searchString_length;
+                offset += p1;
+                highlighter.addHighlight(p0, p1, painter);
+            }
         }
-
     }
 
     public void addFile(String file) {
