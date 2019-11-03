@@ -89,7 +89,10 @@ public class SearchProducerThread extends Thread {
         File[] directoryListing = dir.listFiles();
 
         ArrayList<File> files = new ArrayList<File>();
-        files.addAll(Arrays.asList(directoryListing));
+        if(directoryListing != null)
+            files.addAll(Arrays.asList(directoryListing));
+
+        ArrayList<File> symbolicFiles = new ArrayList<>();
 
         for(File f : files) {
             if(isRunning == false)
@@ -98,16 +101,92 @@ public class SearchProducerThread extends Thread {
                 dirQueue.add(f);
                 continue;
             }
+            if(f.isFile() == false) {
+                //Skip special files (unix)
+                continue;
+            }
 
             //Is symbolic link?
             if(searchParams.isFollowSymbolicLinks && Files.isSymbolicLink(f.toPath())) {
                 try {
                     Path link = Files.readSymbolicLink(f.toPath());
-                    files.add(link.toFile());
+                    //files.add(link.toFile()); //Can't modify while iterating on it
+                    symbolicFiles.add(link.toFile());
                     System.out.println("Symbolic link:" + f.toPath() + " -> " + link);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+
+            //Does not read long/big files
+            if(searchParams.isFileSizeSkip && f.length() > fileMaxSize) {
+                //System.out.println("Skips file: " + f.getAbsolutePath() + "\n\tReason: File size (" + f.length() + " Bytes) exceeds " + fileMaxSize + " Bytes");
+                continue;
+            }
+
+            //Does the name has the string?
+            if(searchParams.isIncludeFilename) {
+                if(searchParams.isCaseSensitive) {
+                    if( f.getName().contains(searchParams.searchString)) {
+                        try {
+                            String fpath = f.getAbsolutePath();
+                            bq.put(fpath);
+                            continue;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    if( f.getName().toLowerCase().contains(searchParams.searchString.toLowerCase())) {
+                        try {
+                            String fpath = f.getAbsolutePath();
+                            bq.put(fpath);
+                            continue;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+
+            }
+
+            //Does the file contains the string?
+            if(f.canRead()) {
+                try {
+                    String line;
+                    FileReader fReader = new FileReader(f);
+                    BufferedReader fileBuff = new BufferedReader(fReader, 1000000);
+                    while ((line = fileBuff.readLine()) != null) {
+                        if(searchParams.isCaseSensitive) {
+                            if(line.contains(searchParams.searchString)) {
+                                String fpath = f.getAbsolutePath();
+                                bq.put(fpath);
+                                break;
+                            }
+                        } else {
+                            if(line.toLowerCase().contains(searchParams.searchString.toLowerCase())) {
+                                String fpath = f.getAbsolutePath();
+                                bq.put(fpath);
+                                break;
+                            }
+                        }
+                    }
+                    fileBuff.close();
+                } catch (SecurityException | InterruptedException | IOException e) {
+                    e.printStackTrace();
+                    System.err.println("Error reading: " + f.getAbsolutePath());
+                }
+            }
+        }
+
+        for(File f : symbolicFiles) {
+            if(isRunning == false)
+                break;
+
+            if(f.isFile() == false) {
+                //Skip special files (unix)
+                continue;
             }
 
             //Does not read long/big files
