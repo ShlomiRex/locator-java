@@ -35,11 +35,16 @@ public class SearchWindow extends JFrame {
         textArea.setRows(10);
         textArea.setEditable(false);
 
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane_List, textAreaWithLineNumber);
+
+        //Finilize JFrame
+
         setLayout( new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-        add(scrollPane_List);
-        add(textAreaWithLineNumber);
+        add(splitPane);
         pack();
         setLocationRelativeTo(null);
+
+        //Finilize
 
         list.addMouseListener( new MouseAdapter()
         {
